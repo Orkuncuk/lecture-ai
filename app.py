@@ -1,6 +1,14 @@
 import os
 import streamlit as st
 
+# 1. ÖNCE API KEY'İ AYARLIYORUZ (İçeri aktarmalardan önce çalışmalı)
+groq_key = os.environ.get("GROQ_API_KEY") or st.secrets.get("GROQ_API_KEY", "")
+if not groq_key:
+    st.error("⚠️ GROQ_API_KEY bulunamadı. `.env` dosyana veya Streamlit secrets'a ekle.")
+    st.stop()
+os.environ["GROQ_API_KEY"] = groq_key
+
+# 2. ŞİMDİ KENDİ MODÜLLERİMİZİ İÇERİ AKTARABİLİRİZ
 from utils.transcribe import transcribe_bytes, rebuild_transcript, format_timestamp
 from utils.embedder import embed_transcript
 from utils.pdf_gen import get_pdf_bytes
