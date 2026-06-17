@@ -33,7 +33,7 @@ _PROMPTS = {
 _LANG_CODES = {"tr": "tr", "en": "en", "mixed": None}
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Eşik değerler (REVİZE EDİLMİŞ)
+# Eşik değerler
 # ─────────────────────────────────────────────────────────────────────────────
 _ALLOWED_CHARS = re.compile(
     r"[a-zA-ZçğıöşüÇĞİÖŞÜ0-9\s\.,!?;:'\"\-\(\)\[\]/%&@#\*\+=<>_°²³€$₺]"
@@ -60,7 +60,7 @@ _LOOP_SIM_THRESHOLD = 0.85    # ardışık iki segment bu kadar benzese loop say
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# [YENİ] Dil tutarlılığı için Türkçe'ye özgü karakter seti
+# Dil tutarlılığı için Türkçe'ye özgü karakter seti
 # ─────────────────────────────────────────────────────────────────────────────
 _TURKISH_SPECIFIC = frozenset("çğışöüÇĞİŞÖÜ")
 _TURKISH_CHAR_RATIO_THRESHOLD = 0.015   # Harflerin %1.5'i Türkçe özel → Türkçe metin say
@@ -97,7 +97,7 @@ def _is_low_quality(text: str) -> bool:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# [YENİ] Loop (Tekrar) Halüsinasyon Dedektörü
+# Loop (Tekrar) Halüsinasyon Dedektörü
 # ─────────────────────────────────────────────────────────────────────────────
 def _normalize_for_repeat(text: str) -> str:
     """İki segmenti karşılaştırırken büyük/küçük, noktalama, boşluk normalize."""
@@ -132,7 +132,7 @@ def _flag_loops(metrics: list[dict]) -> None:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# [YENİ] Onarım (Repair) Katı Filtresi
+# Onarım (Repair) Katı Filtresi
 # ─────────────────────────────────────────────────────────────────────────────
 def _is_repair_garbage(text: str) -> bool:
     """
@@ -311,12 +311,12 @@ def _build_transcript(file_tuple, primary, primary_lang_choice) -> dict:
 
     metrics = [_segment_metrics(seg) for seg in segments]
     
-    # [YENİ] Ardışık loop'ları burada bayrakla işaretliyoruz
+    # Ardışık loop'ları burada bayrakla işaretliyoruz
     _flag_loops(metrics)                           
     
     bad_indices = {i for i, m in enumerate(metrics) if m["is_bad"]}
 
-    # [DEĞİŞTİ]: Sadece "mixed" modda repair dene. tr/en'de kullanıcının seçimine güven.
+    # Sadece "mixed" modda repair dene. tr/en'de kullanıcının seçimine güven.
     repair_segments = []
     if bad_indices and primary_lang_choice == "mixed":
         detected_lang = getattr(primary, "language", None)
@@ -353,7 +353,6 @@ def _build_transcript(file_tuple, primary, primary_lang_choice) -> dict:
 
         candidate = _candidate_from_segments(seg, repair_segments)
         
-        # [DEĞİŞTİ]: candidate'i artık yeni ve katı olan _is_repair_garbage filtresinden geçiriyoruz
         if candidate and not _is_repair_garbage(candidate):     
             all_segments.append({
                 "index": i, "start": start, "end": end,
