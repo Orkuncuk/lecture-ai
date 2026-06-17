@@ -40,5 +40,5 @@ Anyone can clone and run this project on their local machine. Follow these instr
 
 **1. Clone the repository**
 ```bash
-git clone [https://github.com/YOUR_USERNAME/lecture-ai.git](https://github.com/YOUR_USERNAME/lecture-ai.git)
+git clone [https://github.com/Orkuncuk/lecture-ai.git](https://github.com/Orkuncuk/lecture-ai.git)
 cd lecture-ai
